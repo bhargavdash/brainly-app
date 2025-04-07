@@ -8,7 +8,7 @@ const userSchema = new mongoose.Schema({
 const contentType = ["image", "video", "article", "audio"];
 
 const contentSchema = new mongoose.Schema({
-    line: {type: String, required:true},
+    link: {type: String, required:true},
     type: {type: String, enum:contentType, required:true},
     title: {type: String, required:true},
     tags: [{type: Types.ObjectId, ref: 'Tag'}],
@@ -17,21 +17,17 @@ const contentSchema = new mongoose.Schema({
 
 const linkSchema = new mongoose.Schema({
     hash: {type: String, required:true},
-    userId: {type: Types.ObjectId, ref: 'User', required:true}
+    userId: {type: Types.ObjectId, ref: 'User', required:true, unique:true},
+    sharable: {type: Boolean, default: false}
 })
 
 const tagSchema = new mongoose.Schema({
     title: {type: String, required:true, unique:true}
 })
 
-const User = mongoose.model('user', userSchema);
-const Content = mongoose.model('content', contentSchema);
-const Link = mongoose.model('link', linkSchema);
-const Tag = mongoose.model('tag', tagSchema);
+export const UserModel = mongoose.model('User', userSchema);
+export const ContentModel = mongoose.model('Content', contentSchema);
+export const LinkModel = mongoose.model('Link', linkSchema);
+export const TagModel = mongoose.model('Tag', tagSchema);
 
-module.exports = {
-    User,
-    Content, 
-    Link, 
-    Tag
-}
+
