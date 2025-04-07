@@ -124,7 +124,7 @@ router.get('/v1/content', authMiddleware_1.default, (req, res) => __awaiter(void
         const userId = req.userId;
         const contents = yield db_1.ContentModel.find({
             userId: userId
-        });
+        }).populate('tags');
         if (!contents) {
             return res.status(400).json({ error: "Cannot fetch contents" });
         }

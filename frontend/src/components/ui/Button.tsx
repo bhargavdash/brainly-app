@@ -6,7 +6,8 @@ interface ButtonProps {
     text: string,
     startIcon?: ReactElement | null,
     endIcon?: ReactElement,
-    onClick: () => void | Promise<void>; 
+    onClick: () => void | Promise<void>,
+    disabled?: boolean
 }
 
 const sizeChart = {
@@ -20,13 +21,21 @@ const variantStyles = {
     "secondary": "hover:bg-blue-200 bg-purple-300 text-purple-500"
 }
 
+const disabledStyle = "bg-gray-400 text-gray-700 cursor-not-allowed opacity-60";
 
 export const Button = (props: ButtonProps) => {
     const size = sizeChart[props.size];
+    const baseStyle = props.disabled ? disabledStyle : variantStyles[props.variant];
+
+    const handleClick = () => {
+        if(props.disabled) return;
+        props.onClick();
+    }
     return <>
-        <div onClick={props.onClick} className={`hover:cursor-pointer flex gap-1 rounded-md justify-center items-center
-            ${variantStyles[props.variant]}
+        <div onClick={handleClick}  className={`flex gap-1 rounded-md justify-center items-center
+            ${baseStyle}
             ${size.w} ${size.h}
+            ${props.disabled ? "hover:cursor-events-none" : "hover:cursor-pointer"}
             }`}>
             {props.startIcon}
             <p className='font-bold'>{props.text}</p>

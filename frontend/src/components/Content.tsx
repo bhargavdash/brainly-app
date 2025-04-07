@@ -1,37 +1,78 @@
+import { TagInterface } from "../App"
+import { AudioIcon } from "../icons/AudioIcon"
 import { DeleteIcon } from "../icons/DeleteIcon"
 import { DocumentIcon } from "../icons/DocumentIcon"
+import { ImageIcon } from "../icons/ImageIcon"
 import { ShareIcon } from "../icons/ShareIcon"
+import { XIcon } from "../icons/XIcon"
+import { YoutubeIcon } from "../icons/YoutubeIcon"
+import { TagItem } from "./ui/TagItem"
+import axios from "axios"
 
-export const Content = () => {
+interface ContentProps {
+    id: string,
+    type: "image" | "video" | "article" | "audio" | "tweet",
+    link: string, 
+    title: string, 
+    tags: Array<TagInterface>,
+    onContentDeleted: () => void
+}
+
+export const Content = (props: ContentProps) => {
+
+    const deleteItem = async() => {
+        const response = await axios.delete('http://localhost:3000/api/v1/content', {
+            data: {
+                contentId: props.id
+            },
+            headers: {
+                token: localStorage.getItem('token')
+            }
+        })
+        props.onContentDeleted();
+        console.log("Delete content:", response.data);
+    }
+
+    const getIcon = () => {
+        switch (props.type) {
+            case "image":
+                return <ImageIcon size="md" />
+            case "video":
+                return <YoutubeIcon size="md" />
+            case "article": 
+                return <DocumentIcon size="md" />
+            case "audio":
+                return <AudioIcon size="md" />
+            case "tweet":
+                return <XIcon size="md" />
+            default:
+                break;
+        }
+    }
+
     return <>
-        <div className='w-64 p-4 h-80 bg-gray-900 text-white rounded-lg'>
+        <div className='w-64 p-4 h-80 bg-white text-black rounded-lg'>
             <div className='flex justify-between'>
-                <div className='flex gap-2'>
-                    <DocumentIcon size="md" />
-                    <p className='text-lg'>Project Ideas</p>
+                <div className='flex gap-2 items-center'>
+                    {getIcon()}
+                    <p className='text-lg font-bold'>{props.title}</p>
                 </div>
                 <div className='flex gap-2'>
                     <ShareIcon size='md' />
-                    <DeleteIcon size='md' />
+                    <DeleteIcon onClick={deleteItem} size='md' />
                 </div>
             </div>
-            <div>
-                <p className="text-2xl font-bold mt-2">Future Projects</p>
+            <div className="hover:underline">
+                <a href={props.link} target="/">Link to Content</a>
             </div>
-            <div className='mt-2 text-lg'>
-                <ul>
-                    <li>Build a personal knowledge base</li>
-                    <li>Create a habit tracker</li>
-                    <li>Design a minimalist todo app</li>
-                </ul>
-            </div>
-            <div className="mt-2 flex gap-2 text-xl">
-                <div className='bg-purple-200 text-blue-800'>
-                    #productivity
-                </div>
-                <div className='bg-purple-200 text-blue-800'>
-                    #ideas
-                </div>
+            
+            <div className="mt-2 flex flex-wrap gap-2 text-xl">
+                {props.tags.map(tag => {
+                    return <TagItem 
+                        key={tag._id}
+                        title={tag.title}
+                    />
+                })}
             </div>
             <div className='mt-2 text-xl'>
                 Added on 10/3/2024

@@ -139,7 +139,7 @@ router.get('/v1/content', authMiddleware, async(req: CustomerRequest, res): Prom
         const userId = req.userId;
         const contents = await ContentModel.find({
             userId: userId
-        });
+        }).populate('tags');
 
         if(!contents){
             return res.status(400).json({error: "Cannot fetch contents"});
