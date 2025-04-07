@@ -15,6 +15,7 @@ interface ContentProps {
     link: string, 
     title: string, 
     tags: Array<TagInterface>,
+    createdAt: Date | string,
     onContentDeleted: () => void
 }
 
@@ -74,8 +75,21 @@ export const Content = (props: ContentProps) => {
                     />
                 })}
             </div>
-            <div className='mt-2 text-xl'>
-                Added on 10/3/2024
+            <div className='mt-2 text-md'>
+                <p>Added on:</p>
+                <div className='font-bold'>
+                    {props.createdAt.toLocaleString("en-IN", {
+                        timeZone: "Asia/Kolkata",
+                        day: "2-digit",
+                        month: "2-digit",
+                        year: "numeric",
+                        hour: "2-digit",
+                        minute: "2-digit",
+                        hour12: true
+                    })}
+                    &nbsp;IST
+                </div>
+                
             </div>
         </div>
     </>

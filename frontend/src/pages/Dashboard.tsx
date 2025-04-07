@@ -1,22 +1,23 @@
 import { Content } from "../components/Content"
 import { ContentItem } from "../App";
+import { useEffect } from "react";
 
 
 interface DashboardProps {
+    reloadPage: () => void,
     onContentDeleted: () => void,
     userData: ContentItem[]
 }
 
 export const Dashboard = (props: DashboardProps) => {
 
+    useEffect(() => {
+        props.reloadPage();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    },[])
+    
     console.log(props.userData);
     return <>
-    <div>
-        Problems: 
-        <p>1. When another user logs in , he has to refresh to get his content</p>
-        <p>2. On add content , the component does not automatically fetches data. Works for delete but not here</p>
-
-    </div>
     <div className='px-4 py-4 flex flex-wrap gap-8'>
     {props.userData.map(dataItem => {
         return <Content 
@@ -26,6 +27,7 @@ export const Dashboard = (props: DashboardProps) => {
         title={dataItem.title} 
         link={dataItem.link}
         tags={dataItem.tags} 
+        createdAt={dataItem.createdAt}
         onContentDeleted={props.onContentDeleted}
         />
     })}

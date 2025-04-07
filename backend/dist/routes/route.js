@@ -101,11 +101,12 @@ router.post('/v1/content', authMiddleware_1.default, (req, res) => __awaiter(voi
         const link = req.body.link;
         const title = req.body.title;
         const tags = req.body.tags;
-        const newContent = db_1.ContentModel.create({
+        const newContent = yield db_1.ContentModel.create({
             type: type,
             link: link,
             title: title,
             tags: tags,
+            createdAt: new Date(),
             userId: userId
         });
         if (!newContent) {

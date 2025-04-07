@@ -8,6 +8,7 @@ import { Login } from "./pages/Login";
 import { Signup } from "./pages/Signup";
 import axios from "axios";
 
+
 export interface TagInterface {
   _id: string,
   title: string,
@@ -16,10 +17,11 @@ export interface TagInterface {
 export interface ContentItem {
   _id: string, 
   title: string,
-  type: "image" | "video" | "article" | "audio",
+  type: "image" | "video" | "article" | "audio" | "tweet",
   __v?: number,
   link: string,
-  tags: Array<TagInterface>
+  createdAt: Date | string,
+  tags: Array<TagInterface>,
 }
 
 
@@ -30,12 +32,19 @@ function App (){
   const [userData, setUserData] = useState<ContentItem[]>([]);
 
   const fetchData = async() => {
+    console.log("Fetch data called")
     const response = await axios.get('http://localhost:3000/api/v1/content', {
         headers: {
             token: localStorage.getItem("token")
         }
     })
-    setUserData(response.data.content);
+
+    const parsedContent: ContentItem[] = response.data.content.map((item: any) => ({
+      ...item,
+      createdAt: typeof item.createdAt === "string" ? new Date(item.createdAt) : item.createdAt,
+    }));
+
+    setUserData(parsedContent);
   }
 
   useEffect(()=> {
@@ -56,9 +65,9 @@ function App (){
            />
           <Routes>
             <Route path="/" element={<Home />} />
-            <Route path='/login' element={<Login isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn}/>}/>
+            <Route path='/login' element={<Login  isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn}/>}/>
             <Route path='/signup' element={<Signup />} />
-            <Route path='/dashboard' element={<Dashboard  onContentDeleted={fetchData} userData={userData}/>} />
+            <Route path='/dashboard' element={<Dashboard  reloadPage={fetchData} onContentDeleted={fetchData} userData={userData}/>} />
           </Routes>
         </BrowserRouter>
       </div>

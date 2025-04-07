@@ -12,6 +12,7 @@ const contentSchema = new mongoose.Schema({
     type: {type: String, enum:contentType, required:true},
     title: {type: String, required:true},
     tags: [{type: Types.ObjectId, ref: 'Tag'}],
+    createdAt: {type: Date, required:true},
     userId: {type: Types.ObjectId, ref: 'User'}
 })
 

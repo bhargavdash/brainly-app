@@ -114,11 +114,12 @@ router.post('/v1/content', authMiddleware,  async(req: CustomerRequest, res: Res
         const title = req.body.title;
         const tags = req.body.tags
 
-        const newContent = ContentModel.create({
+        const newContent = await ContentModel.create({
             type: type,
             link: link,
             title: title,
             tags: tags,
+            createdAt: new Date(),
             userId: userId
         })
 
