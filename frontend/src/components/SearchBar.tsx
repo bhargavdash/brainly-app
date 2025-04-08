@@ -14,7 +14,7 @@ interface SearchBarProps {
 
 export const SearchBar = (props: SearchBarProps) => {
 
-    const typeRef = useRef<HTMLInputElement>(null)
+    const typeRef = useRef<HTMLSelectElement>(null)
     const titleRef = useRef<HTMLInputElement>(null)
     const linkRef = useRef<HTMLInputElement>(null)
     const tagsRef = useRef<HTMLInputElement>(null)
