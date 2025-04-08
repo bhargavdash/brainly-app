@@ -50,31 +50,33 @@ function App (){
 
   useEffect(()=> {
     setIsLoggedIn(localStorage.getItem("token") ? true : false);
+      if(isLoggedIn){
+        fetchData();
+      }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   },[])
 
-  if(isLoggedIn){
-    fetchData();
-  }
+
   return <>
-    <div>
-    
-    <div className='font-serif flex min-h-screen'>
-      <div className={`relative flex-1 bg-gray-100`}>
-        <BrowserRouter>
-          <Navbar isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn}
-          isDialogOpen={isDialogOpen} setIsDialogOpen={setIsDialogOpen}
-          onContentAdded={fetchData}
-           />
+    <div className='font-serif min-h-screen bg-gray-100'>
+      <BrowserRouter>
+        <Navbar isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn} />
+        <main className="relative">
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path='/login' element={<Login  isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn}/>}/>
             <Route path='/signup' element={<Signup />} />
-            <Route path='/dashboard' element={<Dashboard  reloadPage={fetchData} onContentDeleted={fetchData} userData={userData}/>} />
+            <Route path='/dashboard' element={<Dashboard  
+              onContentAdded={fetchData} 
+              onContentDeleted={fetchData} 
+              reloadPage={fetchData}
+              userData={userData} 
+              isDialogOpen={isDialogOpen} 
+              setIsDialogOpen={setIsDialogOpen}
+              />} />
           </Routes>
-        </BrowserRouter>
-      </div>
-      
-    </div>
+        </main>
+      </BrowserRouter>
     </div>
   </>
 }

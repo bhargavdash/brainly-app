@@ -7,6 +7,7 @@ interface DialogProps {
     onAdd: () => void
 }
 
+
 export const Dialog = (props: DialogProps) => {
     return (
       <AnimatePresence>
@@ -14,7 +15,7 @@ export const Dialog = (props: DialogProps) => {
           <>
             {/* Backdrop */}
             <motion.div
-              className="fixed inset-0 bg-black bg-opacity-50 z-40"
+              className="fixed inset-0 bg-black bg-opacity-50 z-50"
               onClick={props.onClose}
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
@@ -23,7 +24,7 @@ export const Dialog = (props: DialogProps) => {
   
             {/* Dialog */}
             <motion.div
-              className="fixed top-1/2 left-1/2 z-50"
+              className="fixed top-1/2 left-1/2 z-[60]"
               initial={{ opacity: 0, scale: 0.95, y: "-50%", x: "-50%" }}
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.95 }}

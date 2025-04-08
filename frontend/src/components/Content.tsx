@@ -52,7 +52,7 @@ export const Content = (props: ContentProps) => {
     }
 
     return <>
-        <div className='w-64 p-4 h-80 bg-white text-black rounded-lg'>
+        <div className='w-64 p-4 h-80 bg-white shadow-md text-black rounded-lg'>
             <div className='flex justify-between'>
                 <div className='flex gap-2 items-center'>
                     {getIcon()}
@@ -77,7 +77,7 @@ export const Content = (props: ContentProps) => {
             </div>
             <div className='mt-2 text-md'>
                 <p>Added on:</p>
-                <div className='font-bold'>
+                <div className='font-sans font-bold'>
                     {props.createdAt.toLocaleString("en-IN", {
                         timeZone: "Asia/Kolkata",
                         day: "2-digit",

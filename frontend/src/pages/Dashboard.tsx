@@ -1,12 +1,16 @@
 import { Content } from "../components/Content"
 import { ContentItem } from "../App";
 import { useEffect } from "react";
+import { SearchBar } from "../components/SearchBar";
 
 
 interface DashboardProps {
-    reloadPage: () => void,
+    onContentAdded: () => void,
     onContentDeleted: () => void,
-    userData: ContentItem[]
+    reloadPage: () => void,
+    userData: ContentItem[],
+    isDialogOpen: boolean,
+    setIsDialogOpen: React.Dispatch<React.SetStateAction<boolean>>
 }
 
 export const Dashboard = (props: DashboardProps) => {
@@ -17,20 +21,31 @@ export const Dashboard = (props: DashboardProps) => {
     },[])
     
     console.log(props.userData);
+
     return <>
-    <div className='px-4 py-4 flex flex-wrap gap-8'>
-    {props.userData.map(dataItem => {
-        return <Content 
-        key={dataItem._id}
-        id={dataItem._id}
-        type={dataItem.type} 
-        title={dataItem.title} 
-        link={dataItem.link}
-        tags={dataItem.tags} 
-        createdAt={dataItem.createdAt}
-        onContentDeleted={props.onContentDeleted}
-        />
-    })}
+    <div className='px-4 py-4'>
+        <div className='sticky top-16 z-50'>
+            <SearchBar 
+            onContentAdded={props.onContentAdded} 
+            isDialogOpen={props.isDialogOpen} 
+            setIsDialogOpen={props.setIsDialogOpen}
+            />
+        </div>
+        <div className='flex flex-wrap gap-8 mt-10'> 
+            {props.userData.map(dataItem => {
+            return <Content 
+            key={dataItem._id}
+            id={dataItem._id}
+            type={dataItem.type} 
+            title={dataItem.title} 
+            link={dataItem.link}
+            tags={dataItem.tags} 
+            createdAt={dataItem.createdAt}
+            onContentDeleted={props.onContentDeleted}
+            />
+        })}
+        </div>
+    
     </div>
     </>
 }
