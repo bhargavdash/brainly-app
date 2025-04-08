@@ -6,6 +6,7 @@ import { Button } from "./ui/Button"
 import { useNavigate } from "react-router-dom"
 import { Dialog } from "./ui/Dialog"
 import { DialogOption } from "./ui/DialogOption"
+import { LogoIcon } from "../icons/LogoIcon"
 // import { DialogLookup } from "./ui/DialogLookup"
 
 interface NavbarProps {
@@ -68,21 +69,25 @@ export const Navbar = (props: NavbarProps) => {
         console.log("POST content: ", response.data);
         props.onContentAdded();
         props.setIsDialogOpen(false);
+    }
+    const routeToHome = () => {
+        navigate('/')
     }    
     return <>
-    <div className='text-white p-2 h-16 flex flex-1 justify-between bg-gray-600'>
-        <div className='text-xl font-bold'>
-            All notes
+    <div className='text-white p-2 h-16 flex flex-1 justify-between bg-gray-900'>
+        <div className="flex gap-2 items-center ml-2">
+            <LogoIcon size="lg"/>
+            <p onClick={routeToHome} className="hover:cursor-pointer font-bold text-xl">BrainVault</p>
         </div>
         <div className="flex gap-4">
             <Button 
-            variant="secondary" size="lg" 
+            variant="secondary" size="md" 
             text={`${props.isLoggedIn ? "Share Brain" : "SignUp"}`} 
             startIcon={props.isLoggedIn ? <ShareIcon size="md" /> : null} 
             onClick={props.isLoggedIn ? handleShareBrain : signupUser} 
             />
 
-            <Button variant="primary" size="lg" 
+            <Button variant="primary" size="md" 
             text={`${props.isLoggedIn ? "Add Content" : "Login"}`} 
             startIcon={props.isLoggedIn ? <PlusIcon size="md" /> : null} 
             onClick={props.isLoggedIn ? handleAddContent : loginUser}

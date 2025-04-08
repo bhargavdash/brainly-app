@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { Navbar } from "./components/Navbar";
-import { Sidebar } from "./components/Sidebar";
 import { Dashboard } from "./pages/Dashboard";
 import { Home } from "./pages/Home";
 import { Login } from "./pages/Login";
@@ -39,6 +38,7 @@ function App (){
         }
     })
 
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const parsedContent: ContentItem[] = response.data.content.map((item: any) => ({
       ...item,
       createdAt: typeof item.createdAt === "string" ? new Date(item.createdAt) : item.createdAt,
@@ -47,16 +47,18 @@ function App (){
     setUserData(parsedContent);
   }
 
+
   useEffect(()=> {
     setIsLoggedIn(localStorage.getItem("token") ? true : false);
-    fetchData();
   },[])
 
+  if(isLoggedIn){
+    fetchData();
+  }
   return <>
     <div>
     
-    <div className='flex min-h-screen'>
-      <Sidebar isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn}/>
+    <div className='font-serif flex min-h-screen'>
       <div className={`relative flex-1 bg-gray-100`}>
         <BrowserRouter>
           <Navbar isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn}

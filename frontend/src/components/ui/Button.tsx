@@ -12,13 +12,13 @@ interface ButtonProps {
 
 const sizeChart = {
     "sm": {w: "w-12", h: "h-10"},
-    "md": {w: "w-20", h: "h-16"},
+    "md": {w: "w-20", h: "h-12"},
     "lg": {w: "w-36", h: "h-10"}
 }
 
 const variantStyles = {
-    "primary": "hover:bg-blue-600 bg-purple-600 text-white",
-    "secondary": "hover:bg-blue-200 bg-purple-300 text-purple-500"
+    "primary": "hover:underline",
+    "secondary": "hover:underline"
 }
 
 const disabledStyle = "bg-gray-400 text-gray-700 cursor-not-allowed opacity-60";

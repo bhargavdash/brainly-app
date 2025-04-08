@@ -6,13 +6,13 @@ export default {
   ],
   theme: {
     extend: {
-      colors: {
-        purple: {
-          300: "#dde4fe",
-          500: "#6a6cb5",
-          600: "#4444db"
-        }
-      }
+      // colors: {
+      //   purple: {
+      //     300: "#dde4fe",
+      //     500: "#6a6cb5",
+      //     600: "#4444db"
+      //   }
+      // }
     },
   },
   plugins: [],
