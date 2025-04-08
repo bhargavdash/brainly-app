@@ -1,4 +1,5 @@
 import { AnimatePresence, motion } from "framer-motion"
+import { Button } from "./Button"
 
 interface DialogProps {
     isOpen: boolean,
@@ -31,7 +32,7 @@ export const Dialog = (props: DialogProps) => {
               transition={{ duration: 0.2 }}
             >
               <div className="bg-white rounded-md h-auto w-[700px] flex flex-col shadow-lg">
-                <div className="flex items-center bg-gray-700 justify-center rounded-t-md h-10">
+                <div className="flex items-center bg-gradient-to-br from-gray-700 to-gray-800 justify-center rounded-t-md h-10">
                   <div className="px-4 mr-auto text-white">
                     <p className="font-bold text-xl">Add New Content</p>
                   </div>
@@ -39,19 +40,22 @@ export const Dialog = (props: DialogProps) => {
   
                 <div className="px-4 mt-4">{props.children}</div>
   
-                <div className="ml-auto mr-4 mb-2 flex gap-2">
-                  <div
-                    className="hover:cursor-pointer hover:bg-gray-600 mt-8 bg-gray-700 text-white h-8 w-28 rounded-md flex justify-center items-center text-md font-bold"
+                <div className="mt-4 ml-auto mr-4 mb-2 flex gap-2 text-white">
+                  <Button
+                    variant="secondary"
+                    text="Add"
+                    size="md"
                     onClick={props.onAdd}
-                  >
-                    Add
-                  </div>
-                  <div
-                    className="hover:cursor-pointer hover:bg-gray-600 mt-8 bg-gray-700 text-white h-8 w-28 rounded-md flex justify-center items-center text-md font-bold"
+                    hasBackground={true}
+                   />
+
+                  <Button
+                    variant="secondary"
+                    text="Cancel"
+                    size="md"
                     onClick={props.onClose}
-                  >
-                    Cancel
-                  </div>
+                    hasBackground={true}
+                   />
                 </div>
               </div>
             </motion.div>
