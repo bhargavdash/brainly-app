@@ -35,7 +35,7 @@ export const Dashboard = (props: DashboardProps) => {
             setIsDialogOpen={props.setIsDialogOpen}
             />
         </div>
-        <div className='flex flex-wrap gap-8 mt-10'> 
+        <div className='z-40 flex flex-wrap gap-8 mt-10'> 
             {props.userData.map(dataItem => {
             return <Content 
             key={dataItem._id}

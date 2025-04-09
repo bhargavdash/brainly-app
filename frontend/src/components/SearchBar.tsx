@@ -1,10 +1,11 @@
 import { SearchIcon } from "../icons/SearchIcon"
 import { Button } from "./ui/Button"
-import { useRef } from "react"
+import { useRef, useState } from "react"
 import axios from "axios"
 import { Dialog } from "./ui/Dialog"
 import { DialogOption } from "./ui/DialogOption"
 import { PlusIcon } from "../icons/PlusIcon"
+import { FilterIcon } from "../icons/FilterIcon"
 
 interface SearchBarProps {
     isSharingBrain: boolean,
@@ -15,6 +16,8 @@ interface SearchBarProps {
 }
 
 export const SearchBar = (props: SearchBarProps) => {
+
+    const [isFilterOpen, setIsFilterOpen] = useState(false);
 
     const typeRef = useRef<HTMLSelectElement>(null)
     const titleRef = useRef<HTMLInputElement>(null)
@@ -49,17 +52,23 @@ export const SearchBar = (props: SearchBarProps) => {
         props.setIsDialogOpen(false);
     }
 
+    const openFilter = () => {
+        setIsFilterOpen(true);
+    }
     
     return <>
-        <div className='text-white h-16 bg-gray-200 p-2 rounded-md flex justify-between pt-2 mb-10'>
-            <div className='flex'>
+        <div className='text-white h-16 bg-gray-200 p-2 rounded-md flex justify-between pt-2'>
+            <div className='flex gap-2'>
                 <div className='absolute text-black mt-[10px] ml-1'>
                     <SearchIcon size="lg" />
                 </div>
                 <div>
                     <input placeholder="Search here..."  className="bg-gray-400 text-black placeholder-black pl-10 mt-1 h-10 w-96 rounded-lg" type="text" />
                 </div>
-                <div className='ml-2 mt-1'>
+                <div onClick={openFilter} className="text-black mt-3 hover:cursor-pointer">
+                    <FilterIcon size="lg" />
+                </div>
+                <div className='ml-1 mt-1'>
                     <Button variant="primary" size="md" 
                         text="Search"
                         onClick={handleAddContent} 
@@ -76,6 +85,43 @@ export const SearchBar = (props: SearchBarProps) => {
                 />
             </div>
         </div>
+
+        {isFilterOpen && <div>
+            <div className="fixed inset-0 bg-black bg-opacity-50 z-[90]" onClick={() => setIsFilterOpen(false)}></div>
+            <div className="absolute bg-gradient-to-br from-gray-400 to-gray-300 rounded-md flex flex-col text-black p-2 mt-2 w-60 ml-[400px] z-[91]">
+                <div>
+                    <div>
+                        <input name="tweet" type="checkbox" className='mr-1'/>
+                        <label htmlFor="tweet">Tweet</label>
+                    </div>
+                    <div>
+                        <input name="audio" type="checkbox" className='mr-1'/>
+                        <label htmlFor="audio">Audio</label>
+                    </div>
+                    <div>
+                        <input name="article" type="checkbox" className='mr-1'/>
+                        <label htmlFor="article">Article</label>
+                    </div>
+                    <div>
+                        <input name="video" type="checkbox" className='mr-1'/>
+                        <label htmlFor="video">Video</label>
+                    </div>
+                    <div>
+                        <input name="image" type="checkbox" className='mr-1'/>
+                        <label htmlFor="image">Image</label>
+                    </div>
+                </div>
+                <div className="ml-auto text-white">
+                    <Button 
+                        text="Apply"
+                        variant="secondary"
+                        size="sm"
+                        hasBackground={true}
+                        onClick={() => setIsFilterOpen(false)}
+                     />
+                </div>
+            </div>
+        </div>}
         
         {!props.isSharingBrain && <Dialog 
         title="Add new content"

@@ -13,7 +13,7 @@ interface ButtonProps {
 
 
 const sizeChart = {
-    "sm": "w-20 p-2",
+    "sm": "w-16 p-1",
     "md": "w-24 p-2",
     "lg": "w-36 p-2",
     "xl": "w-40 p-2" 
