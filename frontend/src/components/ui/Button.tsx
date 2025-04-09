@@ -11,11 +11,12 @@ interface ButtonProps {
     disabled?: boolean
 }
 
+
 const sizeChart = {
-    "sm": {w: "w-12", h: "h-6"},
-    "md": {w: "w-24", h: "h-8"},
-    "lg": {w: "w-36", h: "h-10"},
-    "xl": {w: "w-40", h: "h-12"}
+    "sm": "w-20 p-2",
+    "md": "w-24 p-2",
+    "lg": "w-36 p-2",
+    "xl": "w-40 p-2" 
 }
 
 
@@ -25,8 +26,8 @@ export const Button = (props: ButtonProps) => {
     const size = sizeChart[props.size];
 
     const variantStyles = {
-        "primary": props.hasBackground ? "bg-gradient-to-b from-blue-950  to-blue-900" : "hover:underline",
-        "secondary": props.hasBackground ? "bg-gradient-to-b from-blue-950  to-blue-900" : "hover:underline"
+        "primary": props.hasBackground ? "transition-all transform duration-300 bg-gradient-to-b from-blue-950 to-blue-900 hover:underline" : "hover:underline",
+        "secondary": props.hasBackground ? "transition-all transform duration-300 bg-gradient-to-b from-blue-700 to-blue-800 hover:underline" : "hover:underline"
     }
     const baseStyle = props.disabled ? disabledStyle : variantStyles[props.variant];
     
@@ -37,7 +38,7 @@ export const Button = (props: ButtonProps) => {
     return <>
         <div onClick={handleClick}  className={`flex gap-2 rounded-md justify-center items-center
             ${baseStyle}
-            ${size.w} ${size.h}
+            ${size}
             ${props.disabled ? "hover:cursor-events-none" : "hover:cursor-pointer"}
             }`}>
             {props.startIcon}

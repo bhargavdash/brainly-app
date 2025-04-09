@@ -46,7 +46,7 @@ export const Login = (props: LoginProps) => {
                 <p className='mb-2 font-bold'>Password: </p>
                 <input ref={passwordRef} className="p-2 text-white h-8 rounded-md w-full mb-3 bg-gray-600" type="password" />
             </div>
-            <div onClick={handleLogin} className="transition-all duration-300 hover:p-3 font-bold hover:cursor-pointer p-2 mt-4 text-md flex justify-center items-center rounded-lg w-full mb-3 bg-gradient-to-l from-blue-700 to-purple-700 text-white">
+            <div onClick={handleLogin} className="transition-all duration-500 hover:bg-gradient-to-r hover:from-blue-600 hover:to-purple-600 font-bold hover:cursor-pointer p-2 mt-4 text-md flex justify-center items-center rounded-lg w-full mb-3 bg-gradient-to-l from-blue-700 to-purple-700 text-white">
                 <p>Login</p>
             </div>
             <div className='flex justify-center items-center'>

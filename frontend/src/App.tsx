@@ -27,6 +27,7 @@ export interface ContentItem {
 function App (){
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [isSharingBrain, setIsSharingBrain] = useState(false);
 
   const [userData, setUserData] = useState<ContentItem[]>([]);
 
@@ -60,13 +61,17 @@ function App (){
   return <>
     <div className='font-serif min-h-screen bg-gray-100'>
       <BrowserRouter>
-        <Navbar isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn} />
+        <Navbar isSharingBrain={isSharingBrain} setIsSharingBrain={setIsSharingBrain}
+        isDialogOpen={isDialogOpen} setIsDialogOpen={setIsDialogOpen}
+        isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn} />
         <main className="relative">
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path='/login' element={<Login  isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn}/>}/>
             <Route path='/signup' element={<Signup />} />
             <Route path='/dashboard' element={<Dashboard  
+              isSharingBrain={isSharingBrain} 
+              setIsSharingBrain={setIsSharingBrain}
               onContentAdded={fetchData} 
               onContentDeleted={fetchData} 
               reloadPage={fetchData}

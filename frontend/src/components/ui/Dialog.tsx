@@ -2,6 +2,7 @@ import { AnimatePresence, motion } from "framer-motion"
 import { Button } from "./Button"
 
 interface DialogProps {
+    title: string,
     isOpen: boolean,
     onClose: () => void,
     children: React.ReactNode
@@ -16,7 +17,7 @@ export const Dialog = (props: DialogProps) => {
           <>
             {/* Backdrop */}
             <motion.div
-              className="fixed inset-0 bg-black bg-opacity-50 z-50"
+              className="fixed inset-0 bg-black bg-opacity-50 z-[100]"
               onClick={props.onClose}
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
@@ -25,7 +26,7 @@ export const Dialog = (props: DialogProps) => {
   
             {/* Dialog */}
             <motion.div
-              className="fixed top-1/2 left-1/2 z-[60]"
+              className="fixed top-1/2 left-1/2 z-[101]"
               initial={{ opacity: 0, scale: 0.95, y: "-50%", x: "-50%" }}
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.95 }}
@@ -34,13 +35,13 @@ export const Dialog = (props: DialogProps) => {
               <div className="bg-white rounded-md h-auto w-[700px] flex flex-col shadow-lg">
                 <div className="flex items-center bg-gradient-to-br from-gray-700 to-gray-800 justify-center rounded-t-md h-10">
                   <div className="px-4 mr-auto text-white">
-                    <p className="font-bold text-xl">Add New Content</p>
+                    <p className="font-bold text-xl">{props.title}</p>
                   </div>
                 </div>
   
                 <div className="px-4 mt-4">{props.children}</div>
   
-                <div className="mt-4 ml-auto mr-4 mb-2 flex gap-2 text-white">
+                {props.title == "Add new content" && <div className="mt-4 ml-auto mr-4 mb-2 flex gap-2 text-white">
                   <Button
                     variant="secondary"
                     text="Add"
@@ -56,7 +57,17 @@ export const Dialog = (props: DialogProps) => {
                     onClick={props.onClose}
                     hasBackground={true}
                    />
-                </div>
+                </div>}
+                {props.title == "Share your brain using this link" && <div className="mt-4 ml-auto mr-4 mb-2 flex gap-2 text-white">
+                  <Button
+                    variant="secondary"
+                    text="Copy"
+                    size="md"
+                    onClick={props.onAdd}
+                    hasBackground={true}
+                   />
+
+                </div>}
               </div>
             </motion.div>
           </>

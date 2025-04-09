@@ -7,6 +7,8 @@ import { DialogOption } from "./ui/DialogOption"
 import { PlusIcon } from "../icons/PlusIcon"
 
 interface SearchBarProps {
+    isSharingBrain: boolean,
+    setIsSharingBrain: React.Dispatch<React.SetStateAction<boolean>>,
     onContentAdded: () => void,
     isDialogOpen: boolean,
     setIsDialogOpen: React.Dispatch<React.SetStateAction<boolean>>
@@ -49,13 +51,13 @@ export const SearchBar = (props: SearchBarProps) => {
 
     
     return <>
-        <div className='text-white bg-gray-200 p-2 rounded-md flex justify-between items-center mb-10'>
-            <div className='flex relative'>
-                <div className='absolute text-black mt-[6px] ml-1'>
+        <div className='text-white h-16 bg-gray-200 p-2 rounded-md flex justify-between pt-2 mb-10'>
+            <div className='flex'>
+                <div className='absolute text-black mt-[10px] ml-1'>
                     <SearchIcon size="lg" />
                 </div>
                 <div>
-                    <input placeholder="Search here..."  className="bg-gray-400 text-black placeholder-black pl-10  h-10 w-96 rounded-lg" type="text" />
+                    <input placeholder="Search here..."  className="bg-gray-400 text-black placeholder-black pl-10 mt-1 h-10 w-96 rounded-lg" type="text" />
                 </div>
                 <div className='ml-2 mt-1'>
                     <Button variant="primary" size="md" 
@@ -75,7 +77,9 @@ export const SearchBar = (props: SearchBarProps) => {
             </div>
         </div>
         
-        <Dialog isOpen={props.isDialogOpen} 
+        {!props.isSharingBrain && <Dialog 
+        title="Add new content"
+        isOpen={props.isDialogOpen} 
         onAdd={postNewContent}
         onClose={() => {props.setIsDialogOpen(false)}}>
             <div className='flex flex-col gap-4'>
@@ -84,7 +88,7 @@ export const SearchBar = (props: SearchBarProps) => {
                 <DialogOption label="Type" isDropdown={true} reference={typeRef} />
                 <DialogOption label="Tags" isDropdown={false} reference={tagsRef}/>
             </div>
-        </Dialog>
+        </Dialog>}
 
     </>
 }
