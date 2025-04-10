@@ -120,21 +120,27 @@ router.post(
       const title = req.body.title;
       const tags = req.body.tags;
 
-      let currTag = await TagModel.findOne({title: tags});
+      const tagIds = []
 
-      if(!currTag){
-        // create a new tag 
-        const newTag = await TagModel.create({
-          title: tags
-        })
-        currTag = newTag
+      for(let i=0; i<tags.length; i++){
+        let currTag = await TagModel.findOne({title: tags[i]});
+
+        if(!currTag){
+          // create new tag
+          const newTag = await TagModel.create({
+            title: tags[i]
+          })
+          currTag = newTag
+        }
+
+        tagIds.push(currTag._id)
       }
 
       const newContent = await ContentModel.create({
         type: type,
         link: link,
         title: title,
-        tags: [currTag?._id],
+        tags: tagIds,
         createdAt: new Date(),
         userId: userId,
       });

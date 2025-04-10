@@ -30,7 +30,8 @@ export const SearchBar = (props: SearchBarProps) => {
     const titleRef = useRef<HTMLInputElement>(null)
     const linkRef = useRef<HTMLInputElement>(null)
     const [tagValue, setTagValue] = useState("");
-    
+    const [selectedTags, setSelectedTags] = useState<string[]>([]);
+
     console.log("Dialog", props.isDialogOpen);
 
     const handleAddContent = () => {
@@ -41,13 +42,13 @@ export const SearchBar = (props: SearchBarProps) => {
         console.log("Type: ", typeRef.current?.value);
         console.log("Link:", linkRef.current?.value);
         console.log("Title:", titleRef.current?.value);
-        console.log("Tags: ", tagValue);
+        console.log("Tags: ", selectedTags);
 
         const response = await axios.post('http://localhost:3000/api/v1/content', {
             type: typeRef.current?.value,
             link: linkRef.current?.value,
             title: titleRef.current?.value,
-            tags: tagValue
+            tags: selectedTags
         }, {
             headers: {
                 token: localStorage.getItem('token')
@@ -58,6 +59,7 @@ export const SearchBar = (props: SearchBarProps) => {
         props.onContentAdded();
         props.setIsDialogOpen(false);
         setTagValue("")
+        setSelectedTags([])
     }
 
     const handleCheckboxChange = (value: string) => {
@@ -147,7 +149,10 @@ export const SearchBar = (props: SearchBarProps) => {
         title="Add new content"
         isOpen={props.isDialogOpen} 
         onAdd={postNewContent}
-        onClose={() => {props.setIsDialogOpen(false)}}>
+        onClose={() => {
+            setSelectedTags([])
+            props.setIsDialogOpen(false)
+            }}>
             <div className='flex flex-col gap-4'>
                 <DialogOption label="Title" isDropdown={false} reference={titleRef} />
                 <DialogOption label="Link" isDropdown={false} reference={linkRef} />
@@ -155,6 +160,8 @@ export const SearchBar = (props: SearchBarProps) => {
                 <TagsPanel 
                     tagValue={tagValue}
                     setTagValue={setTagValue}
+                    selectedTags={selectedTags}
+                    setSelectedTags={setSelectedTags}
                  />
             </div>
         </Dialog>}

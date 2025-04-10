@@ -12,6 +12,7 @@ export const DialogOption = (props: DialogOptionProps) => {
             <div className="grid grid-cols-10 items-center">
             <p className='col-span-1 font-bold text-black mt-2'>{props.label}</p>
             <select ref={props.reference as React.RefObject<HTMLSelectElement>} className='px-1 col-span-9 mt-2 h-8 rounded-md w-full bg-gray-100 text-black border border-black'>
+                <option value="">--Select-Type--</option>
                 <option value="image">Image</option>
                 <option value="video">Video</option>
                 <option value="tweet">Tweet</option>

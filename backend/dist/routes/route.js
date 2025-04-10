@@ -103,19 +103,23 @@ router.post("/v1/content", authMiddleware_1.default, (req, res) => __awaiter(voi
         const link = req.body.link;
         const title = req.body.title;
         const tags = req.body.tags;
-        let currTag = yield db_1.TagModel.findOne({ title: tags });
-        if (!currTag) {
-            // create a new tag 
-            const newTag = yield db_1.TagModel.create({
-                title: tags
-            });
-            currTag = newTag;
+        const tagIds = [];
+        for (let i = 0; i < tags.length; i++) {
+            let currTag = yield db_1.TagModel.findOne({ title: tags[i] });
+            if (!currTag) {
+                // create new tag
+                const newTag = yield db_1.TagModel.create({
+                    title: tags[i]
+                });
+                currTag = newTag;
+            }
+            tagIds.push(currTag._id);
         }
         const newContent = yield db_1.ContentModel.create({
             type: type,
             link: link,
             title: title,
-            tags: [currTag === null || currTag === void 0 ? void 0 : currTag._id],
+            tags: tagIds,
             createdAt: new Date(),
             userId: userId,
         });
