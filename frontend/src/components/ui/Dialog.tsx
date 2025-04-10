@@ -62,7 +62,7 @@ export const Dialog = (props: DialogProps) => {
                   <Button
                     variant="secondary"
                     text="Copy"
-                    size="md"
+                    size="sm"
                     onClick={props.onAdd}
                     hasBackground={true}
                    />

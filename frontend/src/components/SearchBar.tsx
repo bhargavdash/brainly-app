@@ -6,6 +6,8 @@ import { Dialog } from "./ui/Dialog"
 import { DialogOption } from "./ui/DialogOption"
 import { PlusIcon } from "../icons/PlusIcon"
 import { FilterIcon } from "../icons/FilterIcon"
+import { FilterOption } from "./ui/FilterOption"
+import { TagsPanel } from "./TagsPanel"
 
 interface SearchBarProps {
     reloadPage: () => void,
@@ -27,7 +29,7 @@ export const SearchBar = (props: SearchBarProps) => {
     const typeRef = useRef<HTMLSelectElement>(null)
     const titleRef = useRef<HTMLInputElement>(null)
     const linkRef = useRef<HTMLInputElement>(null)
-    const tagsRef = useRef<HTMLInputElement>(null)
+    const [tagValue, setTagValue] = useState("");
     
     console.log("Dialog", props.isDialogOpen);
 
@@ -39,13 +41,13 @@ export const SearchBar = (props: SearchBarProps) => {
         console.log("Type: ", typeRef.current?.value);
         console.log("Link:", linkRef.current?.value);
         console.log("Title:", titleRef.current?.value);
-        console.log("Tags: ", tagsRef.current?.value);
+        console.log("Tags: ", tagValue);
 
         const response = await axios.post('http://localhost:3000/api/v1/content', {
             type: typeRef.current?.value,
             link: linkRef.current?.value,
             title: titleRef.current?.value,
-            tags: ["67f0f2b48ce2b519fa13e50d", "67f0f2db8ce2b519fa13e50f"]
+            tags: tagValue
         }, {
             headers: {
                 token: localStorage.getItem('token')
@@ -55,6 +57,7 @@ export const SearchBar = (props: SearchBarProps) => {
         console.log("POST content: ", response.data);
         props.onContentAdded();
         props.setIsDialogOpen(false);
+        setTagValue("")
     }
 
     const handleCheckboxChange = (value: string) => {
@@ -85,7 +88,7 @@ export const SearchBar = (props: SearchBarProps) => {
                     />
                 </div>
             </div>
-            <div>
+            <div className='mt-1'>
                 <Button variant="primary" size="xl" 
                     text="Add Content"
                     startIcon={<PlusIcon size='md'/>}
@@ -99,26 +102,31 @@ export const SearchBar = (props: SearchBarProps) => {
             <div className="fixed inset-0 bg-black bg-opacity-50 z-[90]" onClick={() => setIsFilterOpen(false)}></div>
             <div className="absolute bg-gradient-to-br from-gray-400 to-gray-300 rounded-md flex flex-col text-black p-2 mt-2 w-60 ml-[400px] z-[91]">
                 <div>
-                    <div>
-                        <input name="tweet" checked={props.contentType === "tweet"} onChange={() => handleCheckboxChange("tweet")} type="checkbox" className='mr-1'/>
-                        <label htmlFor="tweet">Tweet</label>
-                    </div>
-                    <div>
-                        <input name="audio" checked={props.contentType === "audio"} onChange={() => handleCheckboxChange("audio")} type="checkbox" className='mr-1'/>
-                        <label htmlFor="audio">Audio</label>
-                    </div>
-                    <div>
-                        <input name="article" checked={props.contentType === "article"} onChange={() => handleCheckboxChange("article")} type="checkbox" className='mr-1'/>
-                        <label htmlFor="article">Article</label>
-                    </div>
-                    <div>
-                        <input name="video" checked={props.contentType === "video"} onChange={() => handleCheckboxChange("video")} type="checkbox" className='mr-1'/>
-                        <label htmlFor="video">Video</label>
-                    </div>
-                    <div>
-                        <input name="image" checked={props.contentType === "image"} onChange={() => handleCheckboxChange("image") }type="checkbox" className='mr-1'/>
-                        <label htmlFor="image">Image</label>
-                    </div>
+                    <FilterOption 
+                        type="tweet"
+                        handleCheckboxChange={handleCheckboxChange}
+                        contentType={props.contentType}
+                    />
+                    <FilterOption 
+                        type="audio"
+                        handleCheckboxChange={handleCheckboxChange}
+                        contentType={props.contentType}
+                    />
+                    <FilterOption 
+                        type="article"
+                        handleCheckboxChange={handleCheckboxChange}
+                        contentType={props.contentType}
+                    />
+                    <FilterOption 
+                        type="video"
+                        handleCheckboxChange={handleCheckboxChange}
+                        contentType={props.contentType}
+                    />
+                    <FilterOption 
+                        type="image"
+                        handleCheckboxChange={handleCheckboxChange}
+                        contentType={props.contentType}
+                    />
                 </div>
                 <div className="ml-auto text-white">
                     <Button 
@@ -144,7 +152,10 @@ export const SearchBar = (props: SearchBarProps) => {
                 <DialogOption label="Title" isDropdown={false} reference={titleRef} />
                 <DialogOption label="Link" isDropdown={false} reference={linkRef} />
                 <DialogOption label="Type" isDropdown={true} reference={typeRef} />
-                <DialogOption label="Tags" isDropdown={false} reference={tagsRef}/>
+                <TagsPanel 
+                    tagValue={tagValue}
+                    setTagValue={setTagValue}
+                 />
             </div>
         </Dialog>}
 

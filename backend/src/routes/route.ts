@@ -1,7 +1,7 @@
 import { Router, Request, Response } from "express";
 import { z } from "zod";
 import bcrypt from "bcrypt";
-import { ContentModel, LinkModel, UserModel } from "../database/db";
+import { ContentModel, LinkModel, TagModel, UserModel } from "../database/db";
 import authMiddleware from "../middleware/authMiddleware";
 import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
@@ -120,11 +120,21 @@ router.post(
       const title = req.body.title;
       const tags = req.body.tags;
 
+      let currTag = await TagModel.findOne({title: tags});
+
+      if(!currTag){
+        // create a new tag 
+        const newTag = await TagModel.create({
+          title: tags
+        })
+        currTag = newTag
+      }
+
       const newContent = await ContentModel.create({
         type: type,
         link: link,
         title: title,
-        tags: tags,
+        tags: [currTag?._id],
         createdAt: new Date(),
         userId: userId,
       });
@@ -269,4 +279,19 @@ router.get("/v1/brain/:shareLink", async (req, res): Promise<any> => {
     return res.status(400).json({ error: err });
   }
 });
+
+
+// get tag suggestions 
+router.get('/v1/tags', authMiddleware, async(req, res): Promise<any>=> {
+  try{
+    const tags = await TagModel.find({
+      title: {$regex: `^${req.query.search}`, $options:'i'}
+    });
+
+    return res.status(200).json({tags: tags});
+  } catch(err){
+    console.log(err);
+    return res.status(400).json({error: err});
+  }
+})
 export default router;

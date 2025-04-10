@@ -103,11 +103,19 @@ router.post("/v1/content", authMiddleware_1.default, (req, res) => __awaiter(voi
         const link = req.body.link;
         const title = req.body.title;
         const tags = req.body.tags;
+        let currTag = yield db_1.TagModel.findOne({ title: tags });
+        if (!currTag) {
+            // create a new tag 
+            const newTag = yield db_1.TagModel.create({
+                title: tags
+            });
+            currTag = newTag;
+        }
         const newContent = yield db_1.ContentModel.create({
             type: type,
             link: link,
             title: title,
-            tags: tags,
+            tags: [currTag === null || currTag === void 0 ? void 0 : currTag._id],
             createdAt: new Date(),
             userId: userId,
         });
@@ -226,6 +234,19 @@ router.get("/v1/brain/:shareLink", (req, res) => __awaiter(void 0, void 0, void 
         const userId = getLink.userId;
         const contents = yield db_1.ContentModel.find({ userId: userId }).populate("tags");
         return res.status(200).json({ contents: contents });
+    }
+    catch (err) {
+        console.log(err);
+        return res.status(400).json({ error: err });
+    }
+}));
+// get tag suggestions 
+router.get('/v1/tags', authMiddleware_1.default, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const tags = yield db_1.TagModel.find({
+            title: { $regex: `^${req.query.search}`, $options: 'i' }
+        });
+        return res.status(200).json({ tags: tags });
     }
     catch (err) {
         console.log(err);
