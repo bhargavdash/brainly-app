@@ -5,6 +5,8 @@ import { SearchBar } from "../components/SearchBar";
 
 
 interface DashboardProps {
+    contentType: string,
+    setContentType: React.Dispatch<React.SetStateAction<string>>,
     isSharingBrain: boolean,
     setIsSharingBrain: React.Dispatch<React.SetStateAction<boolean>>,
     onContentAdded: () => void,
@@ -28,6 +30,9 @@ export const Dashboard = (props: DashboardProps) => {
     <div className='px-4 py-4'>
         <div className='sticky top-16 z-50'>
             <SearchBar 
+            reloadPage={props.reloadPage}
+            contentType={props.contentType}
+            setContentType={props.setContentType}  
             isSharingBrain={props.isSharingBrain} 
             setIsSharingBrain={props.setIsSharingBrain}
             onContentAdded={props.onContentAdded} 

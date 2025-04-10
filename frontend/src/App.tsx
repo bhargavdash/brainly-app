@@ -28,12 +28,14 @@ function App (){
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [isSharingBrain, setIsSharingBrain] = useState(false);
+  const [contentType, setContentType] = useState("all");
 
   const [userData, setUserData] = useState<ContentItem[]>([]);
 
   const fetchData = async() => {
     console.log("Fetch data called")
-    const response = await axios.get('http://localhost:3000/api/v1/content', {
+    console.log(`URL: http://localhost:3000/api/v1/content/${contentType}`)
+    const response = await axios.get(`http://localhost:3000/api/v1/content/${contentType}`, {
         headers: {
             token: localStorage.getItem("token")
         }
@@ -69,7 +71,9 @@ function App (){
             <Route path="/" element={<Home />} />
             <Route path='/login' element={<Login  isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn}/>}/>
             <Route path='/signup' element={<Signup />} />
-            <Route path='/dashboard' element={<Dashboard  
+            <Route path='/dashboard' element={<Dashboard
+              contentType={contentType}
+              setContentType={setContentType}  
               isSharingBrain={isSharingBrain} 
               setIsSharingBrain={setIsSharingBrain}
               onContentAdded={fetchData} 

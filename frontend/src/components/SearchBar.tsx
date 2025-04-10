@@ -8,6 +8,9 @@ import { PlusIcon } from "../icons/PlusIcon"
 import { FilterIcon } from "../icons/FilterIcon"
 
 interface SearchBarProps {
+    reloadPage: () => void,
+    contentType: string,
+    setContentType: React.Dispatch<React.SetStateAction<string>>,
     isSharingBrain: boolean,
     setIsSharingBrain: React.Dispatch<React.SetStateAction<boolean>>,
     onContentAdded: () => void,
@@ -18,6 +21,8 @@ interface SearchBarProps {
 export const SearchBar = (props: SearchBarProps) => {
 
     const [isFilterOpen, setIsFilterOpen] = useState(false);
+
+    console.log("Selected Type:" , props.contentType);
 
     const typeRef = useRef<HTMLSelectElement>(null)
     const titleRef = useRef<HTMLInputElement>(null)
@@ -50,6 +55,10 @@ export const SearchBar = (props: SearchBarProps) => {
         console.log("POST content: ", response.data);
         props.onContentAdded();
         props.setIsDialogOpen(false);
+    }
+
+    const handleCheckboxChange = (value: string) => {
+        props.setContentType((prev) => (prev === value ? "all" : value));
     }
 
     const openFilter = () => {
@@ -91,23 +100,23 @@ export const SearchBar = (props: SearchBarProps) => {
             <div className="absolute bg-gradient-to-br from-gray-400 to-gray-300 rounded-md flex flex-col text-black p-2 mt-2 w-60 ml-[400px] z-[91]">
                 <div>
                     <div>
-                        <input name="tweet" type="checkbox" className='mr-1'/>
+                        <input name="tweet" checked={props.contentType === "tweet"} onChange={() => handleCheckboxChange("tweet")} type="checkbox" className='mr-1'/>
                         <label htmlFor="tweet">Tweet</label>
                     </div>
                     <div>
-                        <input name="audio" type="checkbox" className='mr-1'/>
+                        <input name="audio" checked={props.contentType === "audio"} onChange={() => handleCheckboxChange("audio")} type="checkbox" className='mr-1'/>
                         <label htmlFor="audio">Audio</label>
                     </div>
                     <div>
-                        <input name="article" type="checkbox" className='mr-1'/>
+                        <input name="article" checked={props.contentType === "article"} onChange={() => handleCheckboxChange("article")} type="checkbox" className='mr-1'/>
                         <label htmlFor="article">Article</label>
                     </div>
                     <div>
-                        <input name="video" type="checkbox" className='mr-1'/>
+                        <input name="video" checked={props.contentType === "video"} onChange={() => handleCheckboxChange("video")} type="checkbox" className='mr-1'/>
                         <label htmlFor="video">Video</label>
                     </div>
                     <div>
-                        <input name="image" type="checkbox" className='mr-1'/>
+                        <input name="image" checked={props.contentType === "image"} onChange={() => handleCheckboxChange("image") }type="checkbox" className='mr-1'/>
                         <label htmlFor="image">Image</label>
                     </div>
                 </div>
@@ -117,7 +126,10 @@ export const SearchBar = (props: SearchBarProps) => {
                         variant="secondary"
                         size="sm"
                         hasBackground={true}
-                        onClick={() => setIsFilterOpen(false)}
+                        onClick={() => {
+                            setIsFilterOpen(false);
+                            props.reloadPage();
+                        }}
                      />
                 </div>
             </div>

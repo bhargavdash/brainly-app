@@ -27,21 +27,23 @@ router.get("/healthy", (req, res) => {
     res.send("Router is healthy");
 });
 const requiredUser = zod_1.z.object({
-    username: zod_1.z.string()
+    username: zod_1.z
+        .string()
         .min(3, { message: "Username must have atleast 3 letters" })
-        .max(10, { message: 'username must have atmost 10 letters' }),
-    password: zod_1.z.string()
+        .max(10, { message: "username must have atmost 10 letters" }),
+    password: zod_1.z
+        .string()
         .min(8, { message: "password must have atleast 8 characters" })
         .max(20, { message: "password must have atmost 20 characters" })
-        .refine(value => {
-        return /[A-Z]/.test(value) &&
+        .refine((value) => {
+        return (/[A-Z]/.test(value) &&
             /[a-z]/.test(value) &&
             /[0-9]/.test(value) &&
-            /[!@#$%^&*()]/.test(value);
-    })
+            /[!@#$%^&*()]/.test(value));
+    }),
 });
 // signup route
-router.post('/v1/signup', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+router.post("/v1/signup", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { success, error } = requiredUser.safeParse(req.body);
         if (!success) {
@@ -52,7 +54,7 @@ router.post('/v1/signup', (req, res) => __awaiter(void 0, void 0, void 0, functi
         const hashedPassword = yield bcrypt_1.default.hash(password, 5);
         const newUser = yield db_1.UserModel.create({
             username: username,
-            password: hashedPassword
+            password: hashedPassword,
         });
         if (!newUser) {
             return res.status(400).json({ error: "Cannot create user" });
@@ -65,7 +67,7 @@ router.post('/v1/signup', (req, res) => __awaiter(void 0, void 0, void 0, functi
     }
 }));
 // signin route
-router.post('/v1/signin', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+router.post("/v1/signin", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { success, error } = requiredUser.safeParse(req.body);
         if (!success) {
@@ -74,7 +76,7 @@ router.post('/v1/signin', (req, res) => __awaiter(void 0, void 0, void 0, functi
         const username = req.body.username;
         const password = req.body.password;
         const user = yield db_1.UserModel.findOne({
-            username: username
+            username: username,
         });
         if (!user) {
             return res.status(400).json({ error: "user does not exist" });
@@ -84,7 +86,7 @@ router.post('/v1/signin', (req, res) => __awaiter(void 0, void 0, void 0, functi
             return res.status(403).json({ error: "Incorrect password" });
         }
         const token = jsonwebtoken_1.default.sign({
-            userId: user._id
+            userId: user._id,
         }, JWT_SECRET);
         return res.status(200).json({ message: "signIn successful", token: token });
     }
@@ -94,7 +96,7 @@ router.post('/v1/signin', (req, res) => __awaiter(void 0, void 0, void 0, functi
     }
 }));
 // add a content
-router.post('/v1/content', authMiddleware_1.default, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+router.post("/v1/content", authMiddleware_1.default, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const userId = req.userId;
         const type = req.body.type;
@@ -107,12 +109,14 @@ router.post('/v1/content', authMiddleware_1.default, (req, res) => __awaiter(voi
             title: title,
             tags: tags,
             createdAt: new Date(),
-            userId: userId
+            userId: userId,
         });
         if (!newContent) {
             return res.status(400).json({ error: "can't create new content" });
         }
-        return res.status(200).json({ message: "Content created!!", content: newContent });
+        return res
+            .status(200)
+            .json({ message: "Content created!!", content: newContent });
     }
     catch (err) {
         console.log(err);
@@ -120,16 +124,29 @@ router.post('/v1/content', authMiddleware_1.default, (req, res) => __awaiter(voi
     }
 }));
 // get all contents
-router.get('/v1/content', authMiddleware_1.default, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+router.get("/v1/content/:type", authMiddleware_1.default, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const userId = req.userId;
-        const contents = yield db_1.ContentModel.find({
-            userId: userId
-        }).populate('tags');
-        if (!contents) {
-            return res.status(400).json({ error: "Cannot fetch contents" });
+        const type = req.params.type;
+        if (type === "all") {
+            const contents = yield db_1.ContentModel.find({
+                userId: userId,
+            }).populate("tags");
+            if (!contents) {
+                return res.status(400).json({ error: "Cannot fetch contents" });
+            }
+            return res.status(200).json({ content: contents });
         }
-        return res.status(200).json({ content: contents });
+        else {
+            const contents = yield db_1.ContentModel.find({
+                userId: userId,
+                type: type,
+            }).populate("tags");
+            if (!contents) {
+                return res.status(400).json({ error: "Cannot fetch contents" });
+            }
+            return res.status(200).json({ content: contents });
+        }
     }
     catch (err) {
         console.log(err);
@@ -137,17 +154,19 @@ router.get('/v1/content', authMiddleware_1.default, (req, res) => __awaiter(void
     }
 }));
 // delete a content
-router.delete('/v1/content', authMiddleware_1.default, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+router.delete("/v1/content", authMiddleware_1.default, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const userId = req.userId;
     const contentId = req.body.contentId;
     const targetContent = yield db_1.ContentModel.findOne({
-        _id: contentId
+        _id: contentId,
     });
     if (!targetContent) {
         return res.status(400).json({ error: "Required content not found" });
     }
     if (targetContent.userId != userId) {
-        return res.status(400).json({ error: "Cannot delete this content. UserId didn't match" });
+        return res
+            .status(400)
+            .json({ error: "Cannot delete this content. UserId didn't match" });
     }
     const deletedContent = yield db_1.ContentModel.findByIdAndDelete(contentId);
     if (!deletedContent) {
@@ -155,8 +174,8 @@ router.delete('/v1/content', authMiddleware_1.default, (req, res) => __awaiter(v
     }
     return res.status(200).json({ message: "content deleted!!" });
 }));
-// create a sharable link 
-router.post('/v1/brain/share', authMiddleware_1.default, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+// create a sharable link
+router.post("/v1/brain/share", authMiddleware_1.default, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const userId = req.userId;
     const sharable = req.body.share;
     const existingLink = yield db_1.LinkModel.findOne({ userId: userId });
@@ -176,10 +195,12 @@ router.post('/v1/brain/share', authMiddleware_1.default, (req, res) => __awaiter
         const newLink = yield db_1.LinkModel.create({
             hash: hashString,
             userId: userId,
-            sharable: sharable
+            sharable: sharable,
         });
         if (!newLink) {
-            return res.status(400).json({ error: "Cannot create new sharable link" });
+            return res
+                .status(400)
+                .json({ error: "Cannot create new sharable link" });
         }
         if (sharable) {
             return res.status(200).json({ shareLink: hashString });
@@ -190,15 +211,20 @@ router.post('/v1/brain/share', authMiddleware_1.default, (req, res) => __awaiter
     }
 }));
 // get the contents from the sharable link
-router.get('/v1/brain/:shareLink', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+router.get("/v1/brain/:shareLink", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const shareLink = req.params.shareLink;
-        const getLink = yield db_1.LinkModel.findOne({ hash: shareLink, sharable: true });
+        const getLink = yield db_1.LinkModel.findOne({
+            hash: shareLink,
+            sharable: true,
+        });
         if (!getLink) {
-            return res.status(404).json({ error: "Link not found or not accessible" });
+            return res
+                .status(404)
+                .json({ error: "Link not found or not accessible" });
         }
         const userId = getLink.userId;
-        const contents = yield db_1.ContentModel.find({ userId: userId }).populate('tags');
+        const contents = yield db_1.ContentModel.find({ userId: userId }).populate("tags");
         return res.status(200).json({ contents: contents });
     }
     catch (err) {
