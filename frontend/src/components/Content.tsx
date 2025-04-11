@@ -23,7 +23,7 @@ interface ContentProps {
 export const Content = (props: ContentProps) => {
 
     const deleteItem = async() => {
-        const response = await axios.delete('http://localhost:3000/api/v1/content', {
+        const response = await axios.delete('https://brainly-app-7kzj.onrender.com/api/v1/content', {
             data: {
                 contentId: props.id
             },

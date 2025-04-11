@@ -24,7 +24,7 @@ export const Navbar = (props: NavbarProps) => {
 
 
     const fetchLink = async() => {
-        const response = await axios.post('http://localhost:3000/api/v1/brain/share', {
+        const response = await axios.post('https://brainly-app-7kzj.onrender.com/api/v1/brain/share', {
             share: true
         }, {
             headers: {
@@ -32,7 +32,7 @@ export const Navbar = (props: NavbarProps) => {
             }
         })
         console.log(response.data);
-        setSharableLink(`http://localhost:3000/api/v1/brain/${response.data.shareLink}`)
+        setSharableLink(`https://brainly-app-7kzj.onrender.com/api/v1/brain/${response.data.shareLink}`)
     }
 
     const handleShareBrain = () => {

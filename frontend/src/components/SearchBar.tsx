@@ -32,7 +32,7 @@ export const SearchBar = (props: SearchBarProps) => {
     useEffect(() => {
         const fetchSearchData = async() => {
 
-            const response = await axios.get(`http://localhost:3000/api/v1/search/title?search=${searchContent}`, {
+            const response = await axios.get(`https://brainly-app-7kzj.onrender.com/api/v1/search/title?search=${searchContent}`, {
                 headers: {
                     token: localStorage.getItem("token")
                 }

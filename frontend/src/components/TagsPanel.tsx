@@ -27,7 +27,7 @@ export const TagsPanel = (props: TagsPanelProps) => {
                 setSuggestionTags([])
                 return;
             }
-            const response = await axios.get(`http://localhost:3000/api/v1/tags?search=${props.tagValue}`, {
+            const response = await axios.get(`https://brainly-app-7kzj.onrender.com/api/v1/tags?search=${props.tagValue}`, {
                 headers: {
                     token: localStorage.getItem("token")
                 }

@@ -37,7 +37,7 @@ function App (){
   const fetchData = async() => {
     console.log("Fetch data called")
     console.log(`URL: http://localhost:3000/api/v1/content/${contentType}`)
-    const response = await axios.get(`http://localhost:3000/api/v1/content/${contentType}`, {
+    const response = await axios.get(`https://brainly-app-7kzj.onrender.com/api/v1/content/${contentType}`, {
         headers: {
             token: localStorage.getItem("token")
         }
@@ -72,7 +72,7 @@ function App (){
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path='/login' element={<Login  isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn}/>}/>
-            <Route path='/signup' element={<Signup />} />
+            <Route path='/signup' element={<Signup isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn}/>} />
             
             <Route path='/dashboard' element={<ProtectedRoute>
               <Dashboard
