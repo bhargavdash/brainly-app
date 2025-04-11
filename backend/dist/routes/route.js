@@ -100,10 +100,15 @@ router.post("/v1/content", authMiddleware_1.default, (req, res) => __awaiter(voi
     try {
         const userId = req.userId;
         const type = req.body.type;
+        const description = req.body.description;
         const link = req.body.link;
         const title = req.body.title;
         const tags = req.body.tags;
         const tagIds = [];
+        if (description.trim() === "") {
+            // handle description with AI
+            // finally do description={from_AI}
+        }
         for (let i = 0; i < tags.length; i++) {
             let currTag = yield db_1.TagModel.findOne({ title: tags[i] });
             if (!currTag) {
@@ -117,6 +122,7 @@ router.post("/v1/content", authMiddleware_1.default, (req, res) => __awaiter(voi
         }
         const newContent = yield db_1.ContentModel.create({
             type: type,
+            description: description,
             link: link,
             title: title,
             tags: tagIds,
@@ -251,6 +257,33 @@ router.get('/v1/tags', authMiddleware_1.default, (req, res) => __awaiter(void 0,
             title: { $regex: `^${req.query.search}`, $options: 'i' }
         });
         return res.status(200).json({ tags: tags });
+    }
+    catch (err) {
+        console.log(err);
+        return res.status(400).json({ error: err });
+    }
+}));
+// search a content by title
+router.get('/v1/search/title', authMiddleware_1.default, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    var _a;
+    try {
+        const userId = req.userId;
+        const search = (_a = (req.query.search)) === null || _a === void 0 ? void 0 : _a.toString().toLowerCase();
+        const userContents = yield db_1.ContentModel.find({ userId: userId })
+            .populate('tags', 'title')
+            .lean();
+        // filter from userContents those who have the word in them
+        const matchedContents = userContents.filter(content => content.title.toLowerCase().includes(search));
+        const formatted = matchedContents.map(c => (Object.assign(Object.assign({}, c), { createdAt: c.createdAt.toLocaleString('en-IN', {
+                timeZone: 'Asia/Kolkata',
+                day: '2-digit',
+                month: '2-digit',
+                year: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit',
+                hour12: true
+            }) })));
+        return res.status(200).json({ matchedContents: formatted });
     }
     catch (err) {
         console.log(err);

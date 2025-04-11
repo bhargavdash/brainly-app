@@ -43,6 +43,7 @@ const contentType = ["image", "video", "article", "audio", "tweet"];
 const contentSchema = new mongoose_1.default.Schema({
     link: { type: String, required: true },
     type: { type: String, enum: contentType, required: true },
+    description: { type: String, required: true },
     title: { type: String, required: true },
     tags: [{ type: mongoose_1.Types.ObjectId, ref: 'Tag' }],
     createdAt: { type: Date, required: true },

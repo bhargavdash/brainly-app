@@ -5,6 +5,7 @@ import { ContentModel, LinkModel, TagModel, UserModel } from "../database/db";
 import authMiddleware from "../middleware/authMiddleware";
 import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
+import { Types } from "mongoose";
 dotenv.config();
 
 const JWT_SECRET: string = process.env.JWT_SECRET ?? "";
@@ -103,7 +104,7 @@ router.post("/v1/signin", async (req, res): Promise<any> => {
 });
 
 // custom request interface to add userId to req
-interface CustomerRequest extends Request {
+interface CustomRequest extends Request {
   userId?: string;
 }
 
@@ -112,16 +113,23 @@ interface CustomerRequest extends Request {
 router.post(
   "/v1/content",
   authMiddleware,
-  async (req: CustomerRequest, res: Response): Promise<any> => {
+  async (req: CustomRequest, res: Response): Promise<any> => {
     try {
       const userId = req.userId;
       const type = req.body.type;
+      const description = req.body.description
       const link = req.body.link;
       const title = req.body.title;
       const tags = req.body.tags;
 
       const tagIds = []
 
+
+      if(description.trim() === ""){
+        // handle description with AI
+
+        // finally do description={from_AI}
+      }
       for(let i=0; i<tags.length; i++){
         let currTag = await TagModel.findOne({title: tags[i]});
 
@@ -138,6 +146,7 @@ router.post(
 
       const newContent = await ContentModel.create({
         type: type,
+        description: description,
         link: link,
         title: title,
         tags: tagIds,
@@ -162,7 +171,7 @@ router.post(
 router.get(
   "/v1/content/:type",
   authMiddleware,
-  async (req: CustomerRequest, res): Promise<any> => {
+  async (req: CustomRequest, res): Promise<any> => {
     try {
       const userId = req.userId;
       const type = req.params.type;
@@ -197,7 +206,7 @@ router.get(
 router.delete(
   "/v1/content",
   authMiddleware,
-  async (req: CustomerRequest, res): Promise<any> => {
+  async (req: CustomRequest, res): Promise<any> => {
     const userId = req.userId;
     const contentId = req.body.contentId;
 
@@ -225,7 +234,7 @@ router.delete(
 router.post(
   "/v1/brain/share",
   authMiddleware,
-  async (req: CustomerRequest, res): Promise<any> => {
+  async (req: CustomRequest, res): Promise<any> => {
     const userId = req.userId;
     const sharable: boolean = req.body.share;
 
@@ -300,4 +309,57 @@ router.get('/v1/tags', authMiddleware, async(req, res): Promise<any>=> {
     return res.status(400).json({error: err});
   }
 })
+
+interface TagInterface {
+  _id: Types.ObjectId;
+  title: string;
+}
+
+interface ContentInterface {
+  _id: string,
+  link: string,
+  type: string,
+  description?: string,
+  title: string,
+  tags: TagInterface[],
+  createdAt: Date,
+  userId: Types.ObjectId
+}
+
+// search a content by title
+router.get('/v1/search/title',authMiddleware, async(req: CustomRequest, res): Promise<any> =>  {
+  try{
+    const userId = req.userId
+    const search = (req.query.search)?.toString().toLowerCase() as string;
+    
+    const userContents = await ContentModel.find({userId: userId})
+    .populate<{tags: TagInterface[]}>('tags', 'title')
+    .lean<ContentInterface[]>()
+
+    // filter from userContents those who have the word in them
+    const matchedContents = userContents.filter(content => 
+      content.title.toLowerCase().includes(search)
+    );
+    
+    const formatted = matchedContents.map(c => ({
+      ...c,
+      createdAt: c.createdAt.toLocaleString('en-IN', {
+        timeZone: 'Asia/Kolkata',
+        day: '2-digit',
+        month: '2-digit',
+        year: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit',
+        hour12: true
+      })
+    }));
+
+    return res.status(200).json({matchedContents: formatted});
+
+  } catch(err){
+    console.log(err);
+    return res.status(400).json({error: err});
+  }
+})
+
 export default router;

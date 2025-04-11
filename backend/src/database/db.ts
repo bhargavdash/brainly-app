@@ -10,11 +10,13 @@ const contentType = ["image", "video", "article", "audio", "tweet"];
 const contentSchema = new mongoose.Schema({
     link: {type: String, required:true},
     type: {type: String, enum:contentType, required:true},
+    description: {type: String, required:true},
     title: {type: String, required:true},
     tags: [{type: Types.ObjectId, ref: 'Tag'}],
     createdAt: {type: Date, required:true},
     userId: {type: Types.ObjectId, ref: 'User'}
 })
+
 
 const linkSchema = new mongoose.Schema({
     hash: {type: String, required:true},

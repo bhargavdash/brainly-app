@@ -86,14 +86,14 @@ export const TagsPanel = (props: TagsPanelProps) => {
             {props.selectedTags.map((tag, index) => {
                 return <div 
                 key={index}
-                className="bg-gray-900 text-white p-2 rounded-md text-sm flex gap-1"
+                className="bg-gray-200 text-gray-900 p-2 rounded-full text-sm flex gap-1"
                 >
                     <CloseIcon onClick={() => handleDeleteTag(index)} size='md' />
                     {tag}
                 </div>
             })}
         </div>
-        <div className="absolute left-[82px] top-[265px] w-[192px]">
+        <div className="absolute left-[82px] top-[320px] w-[192px]">
             {showSuggestions && suggestionTags.length == 0 && props.tagValue.trim() != "" && 
             <div className='bg-gray-200 text-gray-900 p-2 rounded-b-md'>
                 <div onMouseDown={() => handleSuggestionClick(props.tagValue)} className='hover:cursor-pointer bg-white rounded-md p-2 w-44 mb-1'>

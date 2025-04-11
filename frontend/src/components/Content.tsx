@@ -12,6 +12,7 @@ import axios from "axios"
 interface ContentProps {
     id: string,
     type: "image" | "video" | "article" | "audio" | "tweet",
+    description?: string,
     link: string, 
     title: string, 
     tags: Array<TagInterface>,
@@ -66,7 +67,9 @@ export const Content = (props: ContentProps) => {
             <div className="hover:underline">
                 <a href={props.link} target="/">Link to Content</a>
             </div>
-            
+            <div className='mt-2 text-lg'>
+                {props.description}
+            </div>
             <div className="mt-2 flex flex-wrap gap-2 text-xl">
                 {props.tags.map(tag => {
                     return <TagItem 

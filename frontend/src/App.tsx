@@ -6,6 +6,7 @@ import { Home } from "./pages/Home";
 import { Login } from "./pages/Login";
 import { Signup } from "./pages/Signup";
 import axios from "axios";
+import { ProtectedRoute } from "./components/ProtectedRoute";
 
 
 export interface TagInterface {
@@ -17,9 +18,10 @@ export interface ContentItem {
   _id: string, 
   title: string,
   type: "image" | "video" | "article" | "audio" | "tweet",
+  description?: string,
   __v?: number,
   link: string,
-  createdAt: Date | string,
+  createdAt: string,
   tags: Array<TagInterface>,
 }
 
@@ -71,7 +73,9 @@ function App (){
             <Route path="/" element={<Home />} />
             <Route path='/login' element={<Login  isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn}/>}/>
             <Route path='/signup' element={<Signup />} />
-            <Route path='/dashboard' element={<Dashboard
+            
+            <Route path='/dashboard' element={<ProtectedRoute>
+              <Dashboard
               contentType={contentType}
               setContentType={setContentType}  
               isSharingBrain={isSharingBrain} 
@@ -80,9 +84,12 @@ function App (){
               onContentDeleted={fetchData} 
               reloadPage={fetchData}
               userData={userData} 
+              setUserData={setUserData}
               isDialogOpen={isDialogOpen} 
               setIsDialogOpen={setIsDialogOpen}
-              />} />
+              /> 
+              </ProtectedRoute> } />
+
           </Routes>
         </main>
       </BrowserRouter>

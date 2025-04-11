@@ -13,6 +13,7 @@ interface DashboardProps {
     onContentDeleted: () => void,
     reloadPage: () => void,
     userData: ContentItem[],
+    setUserData: React.Dispatch<React.SetStateAction<ContentItem[]>>,
     isDialogOpen: boolean,
     setIsDialogOpen: React.Dispatch<React.SetStateAction<boolean>>
 }
@@ -30,6 +31,8 @@ export const Dashboard = (props: DashboardProps) => {
     <div className='px-4 py-4'>
         <div className='sticky top-16 z-50'>
             <SearchBar 
+            userData={props.userData}
+            setUserData={props.setUserData}
             reloadPage={props.reloadPage}
             contentType={props.contentType}
             setContentType={props.setContentType}  
@@ -46,6 +49,7 @@ export const Dashboard = (props: DashboardProps) => {
             key={dataItem._id}
             id={dataItem._id}
             type={dataItem.type} 
+            description={dataItem.description}
             title={dataItem.title} 
             link={dataItem.link}
             tags={dataItem.tags} 
